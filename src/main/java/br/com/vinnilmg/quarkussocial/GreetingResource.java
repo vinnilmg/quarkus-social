@@ -1,4 +1,4 @@
-package br.com.vinnilmg;
+package br.com.vinnilmg.quarkussocial;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;

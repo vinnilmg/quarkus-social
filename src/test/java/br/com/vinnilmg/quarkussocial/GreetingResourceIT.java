@@ -1,4 +1,4 @@
-package br.com.vinnilmg;
+package br.com.vinnilmg.quarkussocial;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
