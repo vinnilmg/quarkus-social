@@ -1,5 +1,6 @@
 package br.com.vinnilmg.quarkussocial.domain.model;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -10,7 +11,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;

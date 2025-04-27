@@ -1,6 +1,8 @@
 package br.com.vinnilmg.quarkussocial.rest;
 
+import br.com.vinnilmg.quarkussocial.domain.model.User;
 import br.com.vinnilmg.quarkussocial.rest.request.CreateUserRequest;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -16,12 +18,19 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class UserResource {
 
     @POST
+    @Transactional
     public Response createUser(final CreateUserRequest request) {
-        return Response.ok(request).build();
+        final var user = new User();
+        user.setName(request.name());
+        user.setAge(request.age());
+        user.persist();
+
+        return Response.ok(user).build();
     }
 
     @GET
     public Response listAllUsers() {
-        return Response.ok().build();
+        final var users = User.findAll();
+        return Response.ok(users.list()).build();
     }
 }
