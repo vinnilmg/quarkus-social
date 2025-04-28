@@ -1,10 +1,9 @@
 package br.com.vinnilmg.quarkussocial.rest;
 
-import br.com.vinnilmg.quarkussocial.domain.model.User;
-import br.com.vinnilmg.quarkussocial.repository.UserRepository;
 import br.com.vinnilmg.quarkussocial.rest.request.CreateUserRequest;
+import br.com.vinnilmg.quarkussocial.service.UserService;
+import br.com.vinnilmg.quarkussocial.service.UserServiceImpl;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -22,58 +21,40 @@ import static java.util.Objects.nonNull;
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
 public class UserResource {
-    private final UserRepository repository;
+    private final UserService service;
 
     @Inject
-    public UserResource(UserRepository repository) {
-        this.repository = repository;
+    public UserResource(UserServiceImpl service) {
+        this.service = service;
     }
 
     @POST
-    @Transactional
     public Response createUser(final CreateUserRequest request) {
-        final var user = new User();
-        user.setName(request.name());
-        user.setAge(request.age());
-
-        repository.persist(user);
-
+        final var user = service.create(request);
         return Response.ok(user).build();
     }
 
     @GET
     public Response listAllUsers() {
-        final var users = repository.findAll();
-        return Response.ok(users.list()).build();
+        final var users = service.findAll();
+        return Response.ok(users).build();
     }
 
     @DELETE
     @Path("/{userId}")
-    @Transactional
     public Response deleteUser(@PathParam("userId") final Long userId) {
-        final User user = repository.findById(userId);
-
-        if (nonNull(user)) {
-            repository.delete(user);
-            return Response.noContent().build();
-        }
-
-        return Response.status(Response.Status.NOT_FOUND).build();
+        final var isDeleted = service.delete(userId);
+        return isDeleted
+                ? Response.noContent().build()
+                : Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @PUT
     @Path("/{userId}")
-    @Transactional
     public Response updateUser(@PathParam("userId") final Long userId, final CreateUserRequest request) {
-        final User user = repository.findById(userId);
-
-        if (nonNull(user)) {
-            user.setName(request.name());
-            user.setAge(request.age());
-
-            return Response.ok(user).build();
-        }
-
-        return Response.status(Response.Status.NOT_FOUND).build();
+        final var updatedUser = service.update(userId, request);
+        return nonNull(updatedUser)
+                ? Response.ok(updatedUser).build()
+                : Response.status(Response.Status.NOT_FOUND).build();
     }
 }
