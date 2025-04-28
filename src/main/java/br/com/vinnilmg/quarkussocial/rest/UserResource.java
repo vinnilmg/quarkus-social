@@ -15,7 +15,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static java.util.Objects.nonNull;
 
 @Path("/users")
 @Consumes(APPLICATION_JSON)
@@ -30,31 +29,23 @@ public class UserResource {
 
     @POST
     public Response createUser(final CreateUserRequest request) {
-        final var user = service.create(request);
-        return Response.ok(user).build();
+        return service.create(request);
     }
 
     @GET
     public Response listAllUsers() {
-        final var users = service.findAll();
-        return Response.ok(users).build();
+        return service.findAll();
     }
 
     @DELETE
     @Path("/{userId}")
     public Response deleteUser(@PathParam("userId") final Long userId) {
-        final var isDeleted = service.delete(userId);
-        return isDeleted
-                ? Response.noContent().build()
-                : Response.status(Response.Status.NOT_FOUND).build();
+        return service.delete(userId);
     }
 
     @PUT
     @Path("/{userId}")
     public Response updateUser(@PathParam("userId") final Long userId, final CreateUserRequest request) {
-        final var updatedUser = service.update(userId, request);
-        return nonNull(updatedUser)
-                ? Response.ok(updatedUser).build()
-                : Response.status(Response.Status.NOT_FOUND).build();
+        return service.update(userId, request);
     }
 }

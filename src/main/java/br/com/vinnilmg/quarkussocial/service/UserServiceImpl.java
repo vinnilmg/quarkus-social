@@ -3,27 +3,34 @@ package br.com.vinnilmg.quarkussocial.service;
 import br.com.vinnilmg.quarkussocial.domain.model.User;
 import br.com.vinnilmg.quarkussocial.repository.UserRepository;
 import br.com.vinnilmg.quarkussocial.rest.request.CreateUserRequest;
+import br.com.vinnilmg.quarkussocial.rest.response.ErrorResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Validator;
+import jakarta.ws.rs.core.Response;
 
-import java.util.List;
-
+import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
+import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 import static java.util.Objects.nonNull;
 
 @ApplicationScoped
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
+    private final Validator validator;
 
     @Inject
-    public UserServiceImpl(UserRepository repository) {
+    public UserServiceImpl(UserRepository repository, Validator validator) {
         this.repository = repository;
+        this.validator = validator;
     }
 
     @Override
-    public List<User> findAll() {
-        return repository.findAll()
+    public Response findAll() {
+        final var users = repository.findAll()
                 .list();
+
+        return Response.ok(users).build();
     }
 
     @Override
@@ -33,41 +40,51 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User create(final CreateUserRequest request) {
+    public Response create(final CreateUserRequest request) {
+        final var violations = validator.validate(request);
+
+        if (!violations.isEmpty()) {
+            final var error = ErrorResponse.createFromValidation(violations);
+            return Response.status(BAD_REQUEST)
+                    .entity(error)
+                    .build();
+        }
+
         final var user = new User();
         user.setName(request.name());
         user.setAge(request.age());
 
         repository.persist(user);
 
-        return user;
+        return Response.ok(user).build();
     }
 
     @Override
     @Transactional
-    public User update(final Long id, final CreateUserRequest request) {
+    public Response update(final Long id, final CreateUserRequest request) {
         final var user = findById(id);
 
         if (nonNull(user)) {
             user.setName(request.name());
             user.setAge(request.age());
 
-            return user;
+            return Response.ok(user).build();
         }
 
-        return null;
+        return Response.status(NOT_FOUND).build();
     }
 
     @Override
     @Transactional
-    public boolean delete(final Long id) {
+    public Response delete(final Long id) {
         final var user = findById(id);
 
         if (nonNull(user)) {
             repository.delete(user);
-            return true;
+
+            return Response.noContent().build();
         }
 
-        return false;
+        return Response.status(NOT_FOUND).build();
     }
 }

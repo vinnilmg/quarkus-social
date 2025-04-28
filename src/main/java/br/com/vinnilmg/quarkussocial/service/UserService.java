@@ -2,17 +2,16 @@ package br.com.vinnilmg.quarkussocial.service;
 
 import br.com.vinnilmg.quarkussocial.domain.model.User;
 import br.com.vinnilmg.quarkussocial.rest.request.CreateUserRequest;
-
-import java.util.List;
+import jakarta.ws.rs.core.Response;
 
 public interface UserService {
-    List<User> findAll();
+    Response findAll();
 
     User findById(Long id);
 
-    User create(CreateUserRequest request);
+    Response create(CreateUserRequest request);
 
-    User update(Long id, CreateUserRequest request);
+    Response update(Long id, CreateUserRequest request);
 
-    boolean delete(Long id);
+    Response delete(Long id);
 }
