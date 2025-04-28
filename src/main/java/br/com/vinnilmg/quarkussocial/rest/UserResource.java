@@ -4,13 +4,17 @@ import br.com.vinnilmg.quarkussocial.domain.model.User;
 import br.com.vinnilmg.quarkussocial.rest.request.CreateUserRequest;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static java.util.Objects.nonNull;
 
 @Path("/users")
 @Consumes(APPLICATION_JSON)
@@ -32,5 +36,35 @@ public class UserResource {
     public Response listAllUsers() {
         final var users = User.findAll();
         return Response.ok(users.list()).build();
+    }
+
+    @DELETE
+    @Path("/{userId}")
+    @Transactional
+    public Response deleteUser(@PathParam("userId") final Long userId) {
+        final User user = User.findById(userId);
+
+        if (nonNull(user)) {
+            user.delete();
+            return Response.ok().build();
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @PUT
+    @Path("/{userId}")
+    @Transactional
+    public Response updateUser(@PathParam("userId") final Long userId, final CreateUserRequest request) {
+        final User user = User.findById(userId);
+
+        if (nonNull(user)) {
+            user.setName(request.name());
+            user.setAge(request.age());
+
+            return Response.ok(user).build();
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 }
