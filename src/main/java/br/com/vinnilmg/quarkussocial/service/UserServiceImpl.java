@@ -10,7 +10,8 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Validator;
 import jakarta.ws.rs.core.Response;
 
-import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
+import static br.com.vinnilmg.quarkussocial.rest.response.ErrorResponse.UNPROCESSABLE_ENTITY_STATUS_CODE;
+import static jakarta.ws.rs.core.Response.Status.CREATED;
 import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 import static java.util.Objects.nonNull;
 
@@ -44,10 +45,9 @@ public class UserServiceImpl implements UserService {
         final var violations = validator.validate(request);
 
         if (!violations.isEmpty()) {
-            final var error = ErrorResponse.createFromValidation(violations);
-            return Response.status(BAD_REQUEST)
-                    .entity(error)
-                    .build();
+            return ErrorResponse
+                    .createFromValidation(violations)
+                    .withStatusCode(UNPROCESSABLE_ENTITY_STATUS_CODE);
         }
 
         final var user = new User();
@@ -56,7 +56,9 @@ public class UserServiceImpl implements UserService {
 
         repository.persist(user);
 
-        return Response.ok(user).build();
+        return Response.status(CREATED)
+                .entity(user)
+                .build();
     }
 
     @Override
@@ -68,7 +70,7 @@ public class UserServiceImpl implements UserService {
             user.setName(request.name());
             user.setAge(request.age());
 
-            return Response.ok(user).build();
+            return Response.noContent().build();
         }
 
         return Response.status(NOT_FOUND).build();
