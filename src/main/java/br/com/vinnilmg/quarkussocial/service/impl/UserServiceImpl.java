@@ -1,9 +1,10 @@
-package br.com.vinnilmg.quarkussocial.service;
+package br.com.vinnilmg.quarkussocial.service.impl;
 
 import br.com.vinnilmg.quarkussocial.domain.model.User;
 import br.com.vinnilmg.quarkussocial.repository.UserRepository;
 import br.com.vinnilmg.quarkussocial.rest.request.CreateUserRequest;
 import br.com.vinnilmg.quarkussocial.rest.response.ErrorResponse;
+import br.com.vinnilmg.quarkussocial.service.UserService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;

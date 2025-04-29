@@ -2,7 +2,7 @@ package br.com.vinnilmg.quarkussocial.rest;
 
 import br.com.vinnilmg.quarkussocial.rest.request.CreateUserRequest;
 import br.com.vinnilmg.quarkussocial.service.UserService;
-import br.com.vinnilmg.quarkussocial.service.UserServiceImpl;
+import br.com.vinnilmg.quarkussocial.service.impl.UserServiceImpl;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
