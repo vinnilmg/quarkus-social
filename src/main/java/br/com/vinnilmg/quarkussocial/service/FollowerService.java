@@ -7,4 +7,6 @@ public interface FollowerService {
     Response followUser(Long userId, FollowUserRequest request);
 
     Response listFollowersByUser(Long userId);
+
+    Response unfollowUser(Long userId, Long followerId);
 }

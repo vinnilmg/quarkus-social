@@ -27,4 +27,12 @@ public class FollowerRepository implements PanacheRepository<Follower> {
         return find("user.id", userId)
                 .list();
     }
+
+    public void deleteByFollowerAndUser(final Long followerId, final Long userId) {
+        final var params = Parameters
+                .with("userId", userId)
+                .and("followerId", followerId);
+
+        delete("follower.id = :followerId and user.id = :userId", params);
+    }
 }

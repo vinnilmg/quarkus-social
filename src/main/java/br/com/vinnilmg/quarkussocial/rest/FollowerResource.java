@@ -5,11 +5,13 @@ import br.com.vinnilmg.quarkussocial.service.FollowerService;
 import br.com.vinnilmg.quarkussocial.service.impl.FollowerServiceImpl;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -33,5 +35,13 @@ public class FollowerResource {
     @GET
     public Response listFollowers(@PathParam("userId") final Long userId) {
         return service.listFollowersByUser(userId);
+    }
+
+    @DELETE
+    public Response unfollowFollower(
+            @PathParam("userId") final Long userId,
+            @QueryParam("followerId") final Long followerId
+    ) {
+        return service.unfollowUser(userId, followerId);
     }
 }

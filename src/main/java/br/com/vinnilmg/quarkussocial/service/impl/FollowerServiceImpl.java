@@ -60,4 +60,15 @@ public class FollowerServiceImpl implements FollowerService {
         final var response = FollowersPerUserResponse.fromEntities(followers);
         return Response.ok(response).build();
     }
+
+    @Override
+    @Transactional
+    public Response unfollowUser(final Long userId, final Long followerId) {
+        final var user = userRepository.findById(userId);
+        if (isNull(user)) return Response.status(Response.Status.NOT_FOUND).build();
+
+        followerRepository.deleteByFollowerAndUser(followerId, userId);
+
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
 }
