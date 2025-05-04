@@ -5,6 +5,7 @@ import br.com.vinnilmg.quarkussocial.service.FollowerService;
 import br.com.vinnilmg.quarkussocial.service.impl.FollowerServiceImpl;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -27,5 +28,10 @@ public class FollowerResource {
     @PUT
     public Response followUser(@PathParam("userId") final Long userId, final FollowUserRequest request) {
         return service.followUser(userId, request);
+    }
+
+    @GET
+    public Response listFollowers(@PathParam("userId") final Long userId) {
+        return service.listFollowersByUser(userId);
     }
 }

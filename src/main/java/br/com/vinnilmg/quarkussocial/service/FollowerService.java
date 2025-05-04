@@ -5,4 +5,6 @@ import jakarta.ws.rs.core.Response;
 
 public interface FollowerService {
     Response followUser(Long userId, FollowUserRequest request);
+
+    Response listFollowersByUser(Long userId);
 }

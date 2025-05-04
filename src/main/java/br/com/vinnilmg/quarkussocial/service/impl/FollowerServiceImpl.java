@@ -4,6 +4,7 @@ import br.com.vinnilmg.quarkussocial.domain.model.Follower;
 import br.com.vinnilmg.quarkussocial.repository.FollowerRepository;
 import br.com.vinnilmg.quarkussocial.repository.UserRepository;
 import br.com.vinnilmg.quarkussocial.rest.request.FollowUserRequest;
+import br.com.vinnilmg.quarkussocial.rest.response.FollowersPerUserResponse;
 import br.com.vinnilmg.quarkussocial.service.FollowerService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -34,7 +35,9 @@ public class FollowerServiceImpl implements FollowerService {
         }
 
         if (user.getId().equals(follower.getId())) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity("You can't follow yourself")
+                    .build();
         }
 
         if (!followerRepository.follows(follower, user)) {
@@ -46,5 +49,15 @@ public class FollowerServiceImpl implements FollowerService {
         }
 
         return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @Override
+    public Response listFollowersByUser(final Long userId) {
+        final var user = userRepository.findById(userId);
+        if (isNull(user)) return Response.status(Response.Status.NOT_FOUND).build();
+
+        final var followers = followerRepository.findByUser(userId);
+        final var response = FollowersPerUserResponse.fromEntities(followers);
+        return Response.ok(response).build();
     }
 }
