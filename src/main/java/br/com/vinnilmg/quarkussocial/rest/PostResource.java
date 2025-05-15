@@ -6,6 +6,7 @@ import br.com.vinnilmg.quarkussocial.service.impl.PostServiceImpl;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -31,7 +32,10 @@ public class PostResource {
     }
 
     @GET
-    public Response listPosts(@PathParam("userId") final Long userId) {
-        return service.findAllByUser(userId);
+    public Response listPosts(
+            @PathParam("userId") final Long userId,
+            @HeaderParam("followerId") final Long followerId
+    ) {
+        return service.findAllByUser(userId, followerId);
     }
 }

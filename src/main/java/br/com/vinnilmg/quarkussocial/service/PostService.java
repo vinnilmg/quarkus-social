@@ -6,5 +6,5 @@ import jakarta.ws.rs.core.Response;
 public interface PostService {
     Response create(Long userId, CreatePostRequest request);
 
-    Response findAllByUser(Long userId);
+    Response findAllByUser(Long userId, Long followerId);
 }
