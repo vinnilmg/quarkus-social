@@ -41,7 +41,7 @@ class PostResourceTest {
 
     @BeforeEach
     @Transactional
-    public void setup() {
+    void setup() {
         final var user = new User();
         user.setName("Fulano");
         user.setAge(18);
